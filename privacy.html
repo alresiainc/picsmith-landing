@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Picsmith — Privacy Policy</title>
+<link rel="icon" href="assets/icon128.png" />
+<style>
+  :root {
+    --bg: #17181c; --text: #eeeef0; --text-2: #a3a3aa; --text-3: #6f6f77;
+    --accent: #3b82f6; --border-soft: #2a2a2f; --panel: #202024;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text); margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .back { font-size: 13.5px; color: var(--text-3); display: inline-block; margin-bottom: 28px; }
+  h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.4px; }
+  .updated { color: var(--text-3); font-size: 13.5px; margin-bottom: 40px; }
+  h2 { font-size: 18px; margin: 40px 0 12px; }
+  p, li { color: var(--text-2); font-size: 15px; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 8px; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border-soft); color: var(--text-2); }
+  th { color: var(--text); font-weight: 600; }
+  code { background: var(--panel); border: 1px solid var(--border-soft); border-radius: 4px; padding: 1px 6px; font-size: 13px; color: var(--text); }
+  .callout { background: var(--panel); border: 1px solid var(--border-soft); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .callout p { margin: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Picsmith</a>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: August 2026</div>
+
+  <div class="callout">
+    <p><strong>Short version:</strong> Picsmith runs entirely inside your browser. Your designs are stored on your own device and are never uploaded to us — we don't operate any server that receives them. The only exception is if you choose to use an AI (Pro) tool with your own OpenAI API key, in which case the specific image or text you act on is sent directly from your browser to OpenAI, using your key, not ours.</p>
+  </div>
+
+  <h2>What Picsmith stores, and where</h2>
+  <ul>
+    <li><strong>Your design projects</strong> (layers, images, text, shapes) are saved locally in your browser's IndexedDB storage. They stay on your device.</li>
+    <li><strong>Your settings</strong> (preferences, your own OpenAI API key if you add one, your Picsmith Pro license key if you have one) are saved locally via the browser's extension storage.</li>
+    <li>None of the above is transmitted to any server we operate. We don't run a backend, and we don't have accounts or sign-in — there's nothing tied to your identity for us to collect.</li>
+  </ul>
+
+  <h2>The AI (Pro) features are opt-in and bring-your-own-key</h2>
+  <p>Picsmith's AI tools (prompt-based edits, background removal, style transfer, text-to-image) are optional. To use them, you provide your own OpenAI API key in Settings. When you run an AI tool:</p>
+  <ul>
+    <li>The image and/or prompt text for <em>that specific action</em> is sent directly from your browser to OpenAI's API (<code>api.openai.com</code>), authenticated with your own API key.</li>
+    <li>We never see, receive, or store that data — the request doesn't pass through any server of ours.</li>
+    <li>That data is then subject to <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener">OpenAI's own privacy policy</a>, since they're the ones processing it.</li>
+  </ul>
+
+  <h2>Permissions Picsmith requests, and why</h2>
+  <table>
+    <tr><th>Permission</th><th>Why</th></tr>
+    <tr><td><code>storage</code></td><td>Save your settings and license key locally.</td></tr>
+    <tr><td><code>unlimitedStorage</code></td><td>Full-resolution designs can exceed the browser's default storage quota; this lifts that cap for IndexedDB.</td></tr>
+    <tr><td><code>tabs</code></td><td>Open the full editor in a new browser tab from the toolbar popup.</td></tr>
+    <tr><td><code>clipboardWrite</code></td><td>Let you copy an exported design directly to your clipboard.</td></tr>
+    <tr><td>Host permission: <code>api.openai.com</code></td><td>Only contacted when you run an AI (Pro) tool with your own key, as described above.</td></tr>
+  </table>
+
+  <h2>What we don't do</h2>
+  <ul>
+    <li>No analytics, telemetry, or usage tracking.</li>
+    <li>No advertising or ad networks.</li>
+    <li>No selling, renting, or sharing of data — we don't have any of your data to share in the first place.</li>
+    <li>No account, sign-up, or personal information required to use the free tier.</li>
+  </ul>
+
+  <h2>Picsmith Pro licensing</h2>
+  <p>A Pro license key is a short signed code; validating it happens entirely on your device and doesn't contact any server. We don't collect payment or personal information as part of license validation.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If this policy changes, we'll update the date at the top of this page and, for material changes, note it in the extension's release notes.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy: <a href="mailto:support@alresiainc.com">support@alresiainc.com</a></p>
+</div>
+</body>
+</html>
