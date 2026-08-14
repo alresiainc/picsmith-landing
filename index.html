@@ -3,351 +3,741 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Picsmith — a photo editor that lives in your browser</title>
-<meta name="description" content="Picsmith is a free, offline-first photo editor built as a browser extension — layers, filters, drawing, text, shapes and templates, plus an optional AI assistant." />
+<title>Picsmith — the design studio that lives in a browser tab</title>
+<meta name="description" content="A real layer-based design and photo editor that runs entirely offline inside your browser. Smart guides, blend modes, 16 tools, non-destructive effects. Free forever." />
 <link rel="icon" href="assets/icon128.png" />
+
+<meta property="og:title" content="Picsmith — the design studio that lives in a browser tab" />
+<meta property="og:description" content="A real layer-based design and photo editor that runs entirely offline inside your browser. Free forever." />
+<meta property="og:image" content="assets/gallery/piece-duotone.png" />
+<meta property="og:type" content="website" />
+
 <style>
-  :root {
-    --bg: #17181c;
-    --bg-2: #1b1b1c;
-    --panel: #202024;
-    --panel-2: #26262b;
-    --border: #34343a;
-    --border-soft: #2a2a2f;
-    --text: #eeeef0;
-    --text-2: #a3a3aa;
-    --text-3: #6f6f77;
-    --accent: #3b82f6;
-    --accent-hover: #5b95f7;
-    --accent-soft: rgba(59, 130, 246, 0.14);
-    --radius: 10px;
-    --radius-sm: 6px;
-    --maxw: 1100px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-  img { max-width: 100%; display: block; }
-  a { color: inherit; }
-  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+/* ============================================================ tokens */
+:root {
+  --ink: #08080a;
+  --ink-2: #0e0e11;
+  --panel: #141418;
+  --panel-2: #1b1b21;
+  --line: #26262e;
+  --line-soft: #1d1d23;
 
-  /* ---------- nav ---------- */
-  header.nav {
-    position: sticky; top: 0; z-index: 20;
-    background: rgba(23, 24, 28, 0.88);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-soft);
-  }
-  .nav-inner { display: flex; align-items: center; gap: 10px; height: 64px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
-  .brand img { width: 26px; height: 26px; border-radius: 6px; }
-  .nav-spacer { flex: 1; }
-  .nav a.navlink { font-size: 14px; color: var(--text-2); padding: 8px 12px; border-radius: var(--radius-sm); }
-  .nav a.navlink:hover { color: var(--text); background: var(--panel-2); }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    font-weight: 600; font-size: 14.5px;
-    padding: 11px 20px; border-radius: var(--radius-sm);
-    text-decoration: none; cursor: pointer; border: none;
-    transition: background 0.15s ease, border-color 0.15s ease;
-  }
-  .btn.primary { background: var(--accent); color: #fff; }
-  .btn.primary:hover { background: var(--accent-hover); }
-  .btn.ghost { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
-  .btn.ghost:hover { border-color: var(--text-3); }
-  .btn svg { width: 16px; height: 16px; }
-  .btn.small { padding: 8px 14px; font-size: 13px; }
+  --paper: #f2f0ec;
+  --paper-2: #a8a6a2;
+  --paper-3: #6e6c70;
 
-  /* ---------- hero ---------- */
-  .hero {
-    position: relative;
-    padding: 96px 0 64px;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: "";
-    position: absolute;
-    top: -220px; left: 50%;
-    width: 900px; height: 620px;
-    transform: translateX(-50%);
-    background: radial-gradient(closest-side, rgba(59,130,246,0.22), transparent 72%);
-    pointer-events: none;
-  }
-  .hero-inner { position: relative; text-align: center; }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 12.5px; font-weight: 700; letter-spacing: 0.4px;
-    color: var(--accent); background: var(--accent-soft);
-    border: 1px solid rgba(59,130,246,0.3);
-    padding: 6px 12px; border-radius: 999px;
-    margin-bottom: 22px;
-  }
-  h1.headline {
-    font-size: 52px; font-weight: 800; letter-spacing: -1px; line-height: 1.08;
-    max-width: 760px; margin: 0 auto 18px;
-  }
-  h1.headline span { color: var(--accent); }
-  .sub {
-    font-size: 18px; color: var(--text-2); max-width: 560px; margin: 0 auto 34px; line-height: 1.6;
-  }
-  .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px; }
-  .cta-note { font-size: 13px; color: var(--text-3); }
+  --accent: #4f7dff;
+  --accent-2: #8b5cf6;
+  --hot: #ff3d7f;
+  --mint: #25e5b0;
 
-  .hero-shot {
-    margin: 56px auto 0;
-    max-width: 620px;
-    position: relative;
-  }
-  .device {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 30px 70px rgba(0,0,0,0.55);
-  }
-  .device-bar {
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border-soft);
-  }
-  .device-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); }
-  .device-title {
-    flex: 1; text-align: center; font-size: 12px; color: var(--text-3);
-    font-weight: 600;
-  }
-  .device img { width: 100%; }
-  .hero-caption { margin-top: 14px; font-size: 13px; color: var(--text-3); }
+  --maxw: 1240px;
+  --gut: 32px;
 
-  /* ---------- sections ---------- */
-  section { padding: 84px 0; }
-  section.alt { background: var(--bg-2); border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft); }
-  .section-head { text-align: center; max-width: 620px; margin: 0 auto 48px; }
-  .section-head .kicker {
-    font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 10px;
-  }
-  .section-head h2 { font-size: 32px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 10px; }
-  .section-head p { color: var(--text-2); font-size: 15.5px; }
+  --f-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --f-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --f-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
 
-  /* feature grid */
-  .features {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-  }
-  .feature {
-    background: var(--panel); border: 1px solid var(--border-soft); border-radius: var(--radius);
-    padding: 22px;
-  }
-  .feature .f-icon {
-    width: 38px; height: 38px; border-radius: var(--radius-sm);
-    background: var(--accent-soft); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 14px;
-  }
-  .feature .f-icon svg { width: 19px; height: 19px; }
-  .feature h3 { font-size: 15px; margin-bottom: 6px; }
-  .feature p { font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--f-display);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--accent); color: #fff; }
 
-  /* build gallery */
-  .gallery {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
-  }
-  .gallery figure {
-    background: var(--panel); border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
-    overflow: hidden;
-  }
-  .gallery img { width: 100%; display: block; }
-  .gallery figcaption {
-    padding: 10px 12px; font-size: 12px; color: var(--text-3); text-align: center;
-    border-top: 1px solid var(--border-soft);
-  }
-  .gallery figcaption b { color: var(--text-2); display: block; font-size: 12.5px; margin-bottom: 2px; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
 
-  /* download */
-  .download-card {
-    background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
-    padding: 44px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center;
-  }
-  .download-card h2 { font-size: 26px; margin-bottom: 10px; }
-  .download-card p { color: var(--text-2); font-size: 14.5px; margin-bottom: 22px; line-height: 1.6; }
-  .steps { list-style: none; counter-reset: step; }
-  .steps li {
-    counter-increment: step;
-    display: flex; gap: 12px; align-items: flex-start;
-    font-size: 13.5px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5;
-  }
-  .steps li::before {
-    content: counter(step);
-    flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 12px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .steps code {
-    background: var(--panel-2); border: 1px solid var(--border-soft); border-radius: 4px;
-    padding: 1px 6px; font-size: 12.5px; color: var(--text);
-  }
+/* fine grain over everything, keeps big flat areas from looking dead */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
-  footer { padding: 40px 0; border-top: 1px solid var(--border-soft); }
-  .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .footer-inner .brand { font-size: 14px; }
-  footer p.note { font-size: 12.5px; color: var(--text-3); }
+/* ============================================================ type */
+.display {
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.93;
+  font-size: clamp(44px, 8.2vw, 116px);
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-3);
+}
+.lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--paper-2); line-height: 1.6; }
+.serif-it { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; }
 
-  @media (max-width: 900px) {
-    .features { grid-template-columns: repeat(2, 1fr); }
-    .gallery { grid-template-columns: repeat(3, 1fr); }
-    .gallery figure:nth-child(4), .gallery figure:nth-child(5) { display: none; }
-    .download-card { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 620px) {
-    h1.headline { font-size: 36px; }
-    .features { grid-template-columns: 1fr; }
-    .gallery { grid-template-columns: repeat(2, 1fr); }
-    .gallery figure:nth-child(3) { display: none; }
-    .nav a.navlink { display: none; }
-  }
+/* ============================================================ buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 14.5px; font-weight: 600;
+  padding: 13px 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform .18s cubic-bezier(.2,.7,.3,1), background .18s ease, border-color .18s ease, color .18s ease;
+  white-space: nowrap;
+}
+.btn svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.btn-primary { background: var(--paper); color: #111; }
+.btn-primary:hover { transform: translateY(-2px); background: #fff; }
+.btn-ghost { border-color: var(--line); color: var(--paper); }
+.btn-ghost:hover { border-color: var(--paper-3); transform: translateY(-2px); }
+.btn-sm { padding: 9px 16px; font-size: 13px; }
+
+/* ============================================================ nav */
+.nav {
+  position: sticky; top: 0; z-index: 60;
+  backdrop-filter: blur(14px);
+  background: rgba(8,8,10,.72);
+  border-bottom: 1px solid var(--line-soft);
+}
+.nav-in { display: flex; align-items: center; gap: 26px; height: 66px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15.5px; letter-spacing: -0.02em; }
+.brand img { width: 25px; height: 25px; border-radius: 7px; }
+.brand .ver { font-family: var(--f-mono); font-size: 10px; color: var(--paper-3); border: 1px solid var(--line); border-radius: 999px; padding: 2px 7px; }
+.nav-links { display: flex; gap: 4px; margin-left: auto; }
+.nav-links a { font-size: 13.5px; color: var(--paper-2); padding: 8px 13px; border-radius: 8px; transition: color .15s, background .15s; }
+.nav-links a:hover { color: var(--paper); background: var(--panel); }
+/* On narrow screens the links would push the CTA off-screen, so drop them and
+   let the download button take the right-hand slot. */
+@media (max-width: 760px) {
+  .nav-links { display: none; }
+  .nav-in { gap: 12px; }
+  .nav-in .btn { margin-left: auto; }
+}
+
+/* ============================================================ hero */
+.hero { position: relative; padding: clamp(64px, 11vw, 132px) 0 0; overflow: hidden; }
+.hero-glow {
+  position: absolute; top: -340px; left: 50%; transform: translateX(-50%);
+  width: min(1200px, 130vw); height: 780px;
+  background:
+    radial-gradient(closest-side, rgba(79,125,255,.30), transparent 70%),
+    radial-gradient(closest-side, rgba(139,92,246,.20), transparent 72%);
+  background-position: 30% 40%, 72% 55%;
+  background-repeat: no-repeat;
+  background-size: 70% 100%, 65% 90%;
+  pointer-events: none;
+  filter: blur(8px);
+}
+.hero-in { position: relative; }
+.hero h1 { max-width: 15ch; margin: 22px 0 26px; }
+.hero h1 .fade { color: var(--paper-3); }
+.hero-sub { max-width: 54ch; }
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 34px; align-items: center; }
+.hero-note { font-size: 12.5px; color: var(--paper-3); margin-top: 16px; font-family: var(--f-mono); }
+
+/* the editor shot, tilted into the page */
+.hero-stage { position: relative; margin-top: clamp(48px, 7vw, 86px); perspective: 2200px; }
+.frame {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  overflow: hidden;
+  box-shadow: 0 60px 120px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(255,255,255,.03);
+}
+.frame-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); background: var(--ink-2); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: #2c2c34; }
+.frame-title { margin-left: 8px; font-size: 11.5px; color: var(--paper-3); font-family: var(--f-mono); }
+.hero-shot {
+  transform: rotateX(7deg) scale(.99);
+  transform-origin: 50% 0;
+  transition: transform .8s cubic-bezier(.2,.7,.3,1);
+}
+.hero-stage:hover .hero-shot { transform: rotateX(0deg) scale(1); }
+.hero-fade { position: absolute; left: 0; right: 0; bottom: -2px; height: 190px; background: linear-gradient(to bottom, transparent, var(--ink) 88%); pointer-events: none; }
+
+/* floating gallery chips beside the hero */
+.float { position: absolute; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 24px 60px -18px rgba(0,0,0,.85); }
+.float img { width: 100%; height: 100%; object-fit: cover; }
+.float-a { width: 132px; height: 165px; left: -54px; top: 96px; transform: rotate(-7deg); }
+.float-b { width: 118px; height: 118px; right: -44px; top: 176px; transform: rotate(6deg); }
+@media (max-width: 1180px) { .float { display: none; } }
+
+/* ============================================================ marquee */
+.marquee { border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 20px 0; margin-top: clamp(60px,8vw,110px); overflow: hidden; background: var(--ink-2); }
+.marquee-track { display: flex; gap: 46px; width: max-content; animation: slide 42s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee span { font-size: 15px; font-weight: 600; color: var(--paper-3); letter-spacing: -0.01em; display: flex; align-items: center; gap: 46px; white-space: nowrap; }
+.marquee span::after { content: "◆"; font-size: 7px; color: var(--accent); }
+@keyframes slide { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+/* ============================================================ sections */
+section { padding: clamp(72px, 10vw, 132px) 0; }
+.sec-head { max-width: 700px; margin-bottom: clamp(38px, 5vw, 62px); }
+.sec-head h2 { font-size: clamp(30px, 4.4vw, 52px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; margin: 14px 0 16px; }
+.sec-head p { color: var(--paper-2); font-size: clamp(15px,1.4vw,17.5px); line-height: 1.62; }
+
+/* ============================================================ gallery */
+.gallery { columns: 3; column-gap: 18px; }
+@media (max-width: 980px) { .gallery { columns: 2; } }
+@media (max-width: 560px) { .gallery { columns: 1; } }
+.piece {
+  break-inside: avoid;
+  margin-bottom: 18px;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  background: var(--panel);
+}
+.piece img { width: 100%; transition: transform .7s cubic-bezier(.2,.7,.3,1); }
+.piece:hover img { transform: scale(1.035); }
+.piece figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 34px 16px 14px;
+  background: linear-gradient(to top, rgba(4,4,6,.94), transparent);
+  font-size: 12px; color: var(--paper-2);
+  display: flex; justify-content: space-between; gap: 10px; align-items: baseline;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.piece:hover figcaption { opacity: 1; transform: none; }
+.piece figcaption b { color: var(--paper); font-size: 12.5px; font-weight: 700; }
+.piece figcaption span { font-family: var(--f-mono); font-size: 10.5px; color: var(--paper-3); }
+
+/* ============================================================ split feature rows */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+.split + .split { margin-top: clamp(56px, 8vw, 110px); }
+.split.flip .split-media { order: -1; }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } .split.flip .split-media { order: 0; } }
+.split h3 { font-size: clamp(23px, 2.8vw, 34px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin: 14px 0 14px; }
+.split p { color: var(--paper-2); font-size: 15.5px; line-height: 1.65; }
+.split-media { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--panel); box-shadow: 0 40px 80px -34px rgba(0,0,0,.9); }
+.kbd-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 20px; }
+kbd {
+  font-family: var(--f-mono); font-size: 11px; color: var(--paper-2);
+  background: var(--panel-2); border: 1px solid var(--line);
+  border-bottom-width: 2px; border-radius: 6px; padding: 4px 8px;
+}
+
+/* ============================================================ live snap demo */
+.demo-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--panel), var(--ink-2));
+  overflow: hidden;
+}
+.demo-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 16px; border-bottom: 1px solid var(--line-soft); }
+.demo-head .t { font-size: 12.5px; font-weight: 600; color: var(--paper-2); }
+.demo-head .h { font-family: var(--f-mono); font-size: 11px; color: var(--paper-3); }
+#snapStage {
+  position: relative;
+  height: 380px;
+  background:
+    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px) 0 0/32px 32px,
+    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px) 0 0/32px 32px;
+  cursor: grab;
+  touch-action: none;
+  overflow: hidden;
+}
+#snapStage.dragging { cursor: grabbing; }
+.snap-box {
+  position: absolute;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  user-select: none;
+}
+.snap-box.static { background: rgba(255,255,255,.055); border: 1px solid var(--line); color: var(--paper-3); }
+.snap-box.drag {
+  background: linear-gradient(140deg, var(--accent), var(--accent-2));
+  color: #fff;
+  box-shadow: 0 14px 34px -8px rgba(79,125,255,.55);
+  cursor: grab;
+}
+.guide { position: absolute; background: var(--hot); pointer-events: none; opacity: 0; transition: opacity .09s ease; }
+.guide.on { opacity: 1; }
+.guide.v { width: 1px; top: 0; bottom: 0; }
+.guide.h { height: 1px; left: 0; right: 0; }
+.demo-foot { padding: 11px 16px; border-top: 1px solid var(--line-soft); font-size: 12px; color: var(--paper-3); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.demo-foot .badge { color: var(--hot); font-family: var(--f-mono); font-size: 11px; opacity: 0; transition: opacity .15s; }
+.demo-foot .badge.on { opacity: 1; }
+
+/* ============================================================ tools grid */
+.tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 900px) { .tools { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .tools { grid-template-columns: 1fr; } }
+.tool {
+  border: 1px solid var(--line-soft); border-radius: 11px;
+  padding: 17px 16px; background: var(--panel);
+  transition: border-color .18s ease, transform .18s ease, background .18s ease;
+}
+.tool:hover { border-color: var(--line); transform: translateY(-2px); background: var(--panel-2); }
+.tool-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.tool svg { width: 17px; height: 17px; color: var(--accent); flex: 0 0 auto; }
+.tool b { font-size: 13.5px; font-weight: 700; }
+.tool .k { margin-left: auto; font-family: var(--f-mono); font-size: 10px; color: var(--paper-3); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; }
+.tool p { font-size: 12.5px; color: var(--paper-3); line-height: 1.5; }
+
+/* ============================================================ stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); border-radius: 12px; overflow: hidden; }
+@media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+.stat { background: var(--ink-2); padding: 26px 20px; }
+.stat b { display: block; font-size: clamp(26px, 3.4vw, 38px); font-weight: 800; letter-spacing: -0.04em; margin-bottom: 4px; }
+.stat span { font-size: 12px; color: var(--paper-3); letter-spacing: .04em; text-transform: uppercase; font-weight: 600; }
+
+/* ============================================================ download */
+.dl {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: clamp(30px, 5vw, 56px);
+  background:
+    radial-gradient(900px 340px at 12% -30%, rgba(79,125,255,.20), transparent 70%),
+    linear-gradient(180deg, var(--panel), var(--ink-2));
+  display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(28px, 5vw, 60px);
+}
+@media (max-width: 900px) { .dl { grid-template-columns: 1fr; } }
+.dl h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 14px; }
+.dl p { color: var(--paper-2); font-size: 15.5px; line-height: 1.62; margin-bottom: 24px; }
+.steps { counter-reset: s; list-style: none; }
+.steps li { counter-increment: s; display: flex; gap: 13px; margin-bottom: 15px; font-size: 14px; color: var(--paper-2); line-height: 1.5; }
+.steps li::before {
+  counter-increment: none; content: counter(s);
+  flex: 0 0 auto; width: 23px; height: 23px; border-radius: 50%;
+  background: rgba(79,125,255,.14); color: #9db4ff;
+  border: 1px solid rgba(79,125,255,.3);
+  font-size: 11.5px; font-weight: 700; font-family: var(--f-mono);
+  display: flex; align-items: center; justify-content: center;
+}
+.steps code { font-family: var(--f-mono); font-size: 12.5px; color: var(--paper); background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; }
+/* "chrome://extensions" is one long unbreakable token — without this it pushes
+   the whole page wider than a phone screen. */
+.steps li, .dl p, .store-note { overflow-wrap: anywhere; }
+.store-note { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line-soft); font-size: 13px; color: var(--paper-3); line-height: 1.55; }
+
+/* ============================================================ footer */
+footer { border-top: 1px solid var(--line-soft); padding: 42px 0; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot p { font-size: 12.5px; color: var(--paper-3); }
+.foot a { color: var(--paper-2); }
+.foot a:hover { color: var(--paper); }
+
+/* ============================================================ scroll reveal */
+.rise { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1); }
+.rise.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .rise { opacity: 1; transform: none; transition: none; }
+  .hero-shot { transition: none; }
+}
 </style>
 </head>
 <body>
 
-  <header class="nav">
-    <div class="wrap nav-inner">
-      <div class="brand"><img src="assets/icon128.png" alt="" /> Picsmith <span id="version-badge" style="font-size:11px;font-weight:600;color:var(--text-3);background:var(--panel-2);border:1px solid var(--border-soft);border-radius:999px;padding:2px 8px;margin-left:4px;">v1.0.0</span></div>
-      <div class="nav-spacer"></div>
-      <a class="navlink" href="#features">Features</a>
-      <a class="navlink" href="#made-with">Made with Picsmith</a>
-      <a class="btn primary small" href="#download">Download</a>
-    </div>
-  </header>
+<!-- ============================================================ nav -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top"><img src="assets/icon128.png" alt="" /> Picsmith <span class="ver" id="version-badge">v1.1.0</span></a>
+    <nav class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#craft">Craft</a>
+      <a href="#tools">Tools</a>
+      <a href="#get">Get it</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#get">Download</a>
+  </div>
+</header>
 
-  <section class="hero">
-    <div class="wrap hero-inner">
-      <span class="eyebrow">Free · Offline-first · No account needed</span>
-      <h1 class="headline">A photo editor that lives <span>in your browser</span></h1>
-      <p class="sub">Layers, filters, drawing, text, shapes and templates — the whole editor runs offline, for free, as a browser extension. No uploads, no sign-up.</p>
-      <div class="cta-row">
-        <a class="btn primary" href="#download">
+<!-- ============================================================ hero -->
+<div id="top" class="hero">
+  <div class="hero-glow"></div>
+  <div class="wrap hero-in">
+    <div class="eyebrow">Offline-first · No account · Free forever</div>
+    <h1 class="display">
+      The design studio<br />
+      that lives in a<br />
+      <span class="serif-it">browser tab.</span>
+    </h1>
+    <p class="lede hero-sub">
+      Layers, blend modes, smart guides, sixteen tools and non-destructive effects —
+      running entirely on your own machine. No uploads. No sign-up. No subscription.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#get">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+        Download Picsmith
+      </a>
+      <a class="btn btn-ghost" href="#work">See what it makes →</a>
+    </div>
+    <div class="hero-note">Chrome · Edge · Brave · Opera — Manifest V3, no build step</div>
+
+    <div class="hero-stage">
+      <figure class="float float-a"><img src="assets/gallery/piece-flyer.png" alt="A club night flyer made in Picsmith" loading="lazy" /></figure>
+      <figure class="float float-b"><img src="assets/gallery/piece-social.png" alt="A gradient social post made in Picsmith" loading="lazy" /></figure>
+      <div class="frame hero-shot">
+        <div class="frame-bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="frame-title">picsmith — editor</span></div>
+        <img src="assets/shot-editor.png" alt="The Picsmith editor with a design open: tool rail, canvas and the item inspector" />
+      </div>
+      <div class="hero-fade"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ marquee -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Layers</span><span>Blend modes</span><span>Smart guides</span><span>Copy &amp; paste</span><span>Drop shadows</span>
+    <span>Clone stamp</span><span>Dodge &amp; burn</span><span>Templates</span><span>Non-destructive effects</span><span>Offline</span>
+    <span>Layers</span><span>Blend modes</span><span>Smart guides</span><span>Copy &amp; paste</span><span>Drop shadows</span>
+    <span>Clone stamp</span><span>Dodge &amp; burn</span><span>Templates</span><span>Non-destructive effects</span><span>Offline</span>
+  </div>
+</div>
+
+<!-- ============================================================ gallery -->
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div class="eyebrow">Made with Picsmith</div>
+      <h2>Every one of these was<br />built with the tool itself.</h2>
+      <p>
+        No mockups, no cheating. Each piece below was rendered by Picsmith's own engine —
+        the exact code that runs when you drag a shape onto the canvas. Hover to see what made it.
+      </p>
+    </div>
+
+    <div class="gallery rise">
+      <figure class="piece">
+        <img src="assets/gallery/piece-duotone.png" alt="Colour Theory poster — three overlapping circles in screen blend mode" loading="lazy" />
+        <figcaption><b>Colour Theory</b><span>screen blend ×3</span></figcaption>
+      </figure>
+      <figure class="piece">
+        <img src="assets/gallery/piece-quote.png" alt="Quote card with an orange multiply bar and gold stars" loading="lazy" />
+        <figcaption><b>Quote card</b><span>multiply + stars</span></figcaption>
+      </figure>
+      <figure class="piece">
+        <img src="assets/gallery/piece-product.png" alt="Studio No 7 product card with a long soft shadow" loading="lazy" />
+        <figcaption><b>Studio Nº7</b><span>shadow · radius · rotate</span></figcaption>
+      </figure>
+      <figure class="piece">
+        <img src="assets/gallery/piece-flyer.png" alt="Night Shift event flyer with a glowing ring and chevron" loading="lazy" />
+        <figcaption><b>Night Shift</b><span>screen glow + chevron</span></figcaption>
+      </figure>
+      <figure class="piece">
+        <img src="assets/gallery/piece-social.png" alt="Make Something Loud social post with three screen-blended circles" loading="lazy" />
+        <figcaption><b>Make Something Loud</b><span>speech bubble + blends</span></figcaption>
+      </figure>
+      <figure class="piece">
+        <img src="assets/gallery/piece-form.png" alt="Form Follows Function minimal poster with a rotated plus shape" loading="lazy" />
+        <figcaption><b>Form</b><span>plus shape · rotation</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ the magic -->
+<section id="craft" style="background:var(--ink-2);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div class="eyebrow">Craft</div>
+      <h2>It snaps. It aligns.<br />It stays out of the way.</h2>
+      <p>
+        The difference between a toy and a tool is the thousand small things.
+        Drag the blue block below — the guides are real, and they behave exactly like the ones in the editor.
+      </p>
+    </div>
+
+    <div class="demo-card rise">
+      <div class="demo-head">
+        <span class="t">Smart guides — live demo</span>
+        <span class="h">drag the blue block · hold Ctrl to ignore guides</span>
+      </div>
+      <div id="snapStage">
+        <div class="snap-box static" data-box style="left:60px;top:56px;width:126px;height:82px">Card</div>
+        <div class="snap-box static" data-box style="left:60px;top:214px;width:126px;height:96px">Panel</div>
+        <div class="snap-box static" data-box style="right:64px;top:96px;width:150px;height:120px">Sidebar</div>
+        <div class="snap-box drag" id="snapDrag" style="left:300px;top:150px;width:132px;height:88px">Drag me</div>
+        <i class="guide v" id="gv"></i>
+        <i class="guide h" id="gh"></i>
+      </div>
+      <div class="demo-foot">
+        <span>Aligns to edges, centres and every other object on the canvas.</span>
+        <span class="badge" id="snapBadge">◆ snapped</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ feature rows -->
+<section>
+  <div class="wrap">
+
+    <div class="split rise">
+      <div>
+        <div class="eyebrow">Clipboard</div>
+        <h3>Copy anything.<br />Paste it anywhere.</h3>
+        <p>
+          Cut, copy, paste and duplicate any item on the canvas — with its effects, blend mode,
+          rotation and rounding intact. Paste lands under your cursor. Alt-drag pulls off a copy
+          without touching the original. Copy in one design, paste into another tab.
+        </p>
+        <div class="kbd-row">
+          <kbd>Ctrl+X</kbd><kbd>Ctrl+C</kbd><kbd>Ctrl+V</kbd><kbd>Ctrl+D</kbd><kbd>Alt + drag</kbd>
+        </div>
+      </div>
+      <div class="split-media"><img src="assets/shots/editor-layers.png" alt="The Picsmith layers panel showing a stacked design" loading="lazy" /></div>
+    </div>
+
+    <div class="split flip rise">
+      <div>
+        <div class="eyebrow">Sixteen shapes, twelve fonts</div>
+        <h3>Start from a template,<br />or from nothing at all.</h3>
+        <p>
+          Instagram, stories, YouTube thumbnails, X posts, LinkedIn banners, Pinterest pins,
+          A4 at 300 DPI — or any custom size you type in. Drag a shape straight onto the canvas
+          and it lands where you dropped it.
+        </p>
+      </div>
+      <div class="split-media"><img src="assets/shot-templates.png" alt="The Picsmith new-design dialog with social and print templates" loading="lazy" /></div>
+    </div>
+
+    <div class="split rise">
+      <div>
+        <div class="eyebrow">Retouching</div>
+        <h3>Brushes that work<br />on real pixels.</h3>
+        <p>
+          Blur to soften, sharpen to bring detail back, dodge to lighten and burn to deepen —
+          each with its own size and strength, each painting only where there are pixels to paint.
+          Plus a clone stamp for removing things that shouldn't be there.
+        </p>
+        <div class="kbd-row">
+          <kbd>B brush</kbd><kbd>L blur</kbd><kbd>K sharpen</kbd><kbd>O dodge</kbd><kbd>N burn</kbd><kbd>S stamp</kbd>
+        </div>
+      </div>
+      <div class="split-media"><img src="assets/shots/editor-brush.png" alt="Brush options with the colour swatch strip and the shape library" loading="lazy" /></div>
+    </div>
+
+    <div class="split flip rise">
+      <div>
+        <div class="eyebrow">Privacy</div>
+        <h3>Your images never<br />leave the machine.</h3>
+        <p>
+          There is no Picsmith server. Nothing to sign up for, nothing to leak — your designs live
+          in your browser's own storage and are never uploaded. The one exception is the optional AI
+          tier, which talks straight to OpenAI using a key you provide yourself.
+        </p>
+        <div class="kbd-row" style="margin-top:22px">
+          <a class="btn btn-ghost btn-sm" href="privacy.html">Read the privacy policy</a>
+        </div>
+      </div>
+      <div class="split-media"><img src="assets/shot-welcome.png" alt="The Picsmith welcome screen" loading="lazy" /></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ tools -->
+<section id="tools" style="background:var(--ink-2);border-top:1px solid var(--line-soft)">
+  <div class="wrap">
+    <div class="sec-head rise">
+      <div class="eyebrow">The rail</div>
+      <h2>Sixteen tools.<br />No menus to dig through.</h2>
+      <p>Every one has a single-key shortcut and its own options bar. Hover any tool in the app and it tells you what it does.</p>
+    </div>
+    <div class="tools rise">
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg><b>Move</b><span class="k">V</span></div><p>Select, drag, scale, rotate and round any item.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.37 2.63 14 7l-1.59 1.59a2 2 0 0 0-.41.55L9.5 13.5 7 16l-4 1 1-4 3-2.5 4.36-2.5a2 2 0 0 1 .55-.41L17 5l4.37-4.37a2.12 2.12 0 1 1 3 3z"/></svg><b>Brush</b><span class="k">B</span></div><p>Freehand strokes with size, softness and opacity.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.9 13.1 13 21a2 2 0 0 1-2.8 0L4.6 15.6a2 2 0 0 1 0-2.8l7.9-7.9a2 2 0 0 1 2.8 0l5.6 5.6a2 2 0 0 1 0 2.8z"/><path d="M15.5 6.5 20 11"/></svg><b>Eraser</b><span class="k">E</span></div><p>Rub pixels away to reveal what's underneath.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.4 8.6 19 5a2 2 0 0 0-2.8-2.8L12.6 5.4a2 2 0 0 0-.4.6L8 13l3 3 7-4.2a2 2 0 0 0 .6-.4z"/><path d="M8 13 3 18l3 3 5-5"/></svg><b>Eyedropper</b><span class="k">I</span></div><p>Lift any colour from the canvas.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg><b>Text</b><span class="k">T</span></div><p>Twelve fonts, spacing, outlines and wrapping.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="12" height="12" rx="2"/><circle cx="17.5" cy="17.5" r="3.5"/></svg><b>Shape</b><span class="k">U</span></div><p>Fourteen shapes, from stars to speech bubbles.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z"/><path d="M7 11V7a4 4 0 0 1 8 0v4"/></svg><b>Fill</b><span class="k">F</span></div><p>Flood-fill a region with adjustable tolerance.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 15 15 3M9 21 21 9" opacity=".55"/></svg><b>Gradient</b><span class="k">G</span></div><p>Linear or radial, dragged across the canvas.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8" opacity=".35"/><circle cx="12" cy="12" r="5" opacity=".6"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg><b>Blur brush</b><span class="k">L</span></div><p>Soften edges, smudge, or hide a detail.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 3.5 6.5L22 12l-6.5 2.5L12 21l-3.5-6.5L2 12l6.5-2.5Z"/></svg><b>Sharpen</b><span class="k">K</span></div><p>Paint crispness back into soft areas.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg><b>Dodge</b><span class="k">O</span></div><p>Brush light into the shadows.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4-3-6.5-4.5-10C13 8 11 8.5 9.5 6.5 8.5 9 5 10.5 5 15a7 7 0 0 0 7 7Z"/></svg><b>Burn</b><span class="k">N</span></div><p>Deepen shadows and build contrast.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h4M5 12h4M5 18h4M12 3v18M17 6h2M17 12h2M17 18h2"/></svg><b>Clone stamp</b><span class="k">S</span></div><p>Copy pixels from here to there.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg><b>Crop</b><span class="k">C</span></div><p>Trim the whole design to a selection.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg><b>Zoom</b><span class="k">Z</span></div><p>Click in, Alt-click out, scroll anywhere.</p></div>
+      <div class="tool"><div class="tool-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2a8 8 0 0 1-6.7-3.6L2 14a2 2 0 0 1 3.2-2.4L7 13.5"/></svg><b>Pan</b><span class="k">H</span></div><p>Or just hold Space with any tool.</p></div>
+    </div>
+
+    <div class="stats rise" style="margin-top:28px">
+      <div class="stat"><b>16</b><span>Tools</span></div>
+      <div class="stat"><b>16</b><span>Blend modes</span></div>
+      <div class="stat"><b>14</b><span>Shapes</span></div>
+      <div class="stat"><b>0</b><span>Bytes uploaded</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ download -->
+<section id="get">
+  <div class="wrap">
+    <div class="dl rise">
+      <div>
+        <div class="eyebrow">Get Picsmith</div>
+        <h2>Install it in<br />under a minute.</h2>
+        <p>
+          Picsmith isn't on the extension stores yet — the listings are in progress. Until then,
+          download the source and load it unpacked. It's the same build, and it updates the moment
+          you drop in a new one.
+        </p>
+        <a class="btn btn-primary" href="downloads/picsmith-extension.zip" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-          Download Picsmith
+          Download the extension
         </a>
-        <a class="btn ghost" href="#made-with">See what it makes</a>
-      </div>
-      <div class="cta-note">Works in Chrome, Edge, Brave &amp; Opera · Manifest V3 · No build step</div>
-
-      <div class="hero-shot">
-        <div class="device">
-          <div class="device-bar">
-            <span class="device-dot"></span><span class="device-dot"></span><span class="device-dot"></span>
-            <span class="device-title">Picsmith — Editor</span>
-          </div>
-          <img src="assets/demo/picsmith-demo-1080.png" alt="A promotional design created entirely inside Picsmith" />
+        <div class="store-note">
+          Coming to the Chrome Web Store and Microsoft Edge Add-ons. Want a nudge when it lands?
+          Watch the <a href="https://github.com/alresiainc/picsmith-landing" style="color:var(--paper-2);text-decoration:underline">project on GitHub</a>.
         </div>
-        <div class="hero-caption">Built end-to-end inside Picsmith — layers, shapes, text and a drop-shadow effect, no external image needed.</div>
       </div>
+      <ol class="steps">
+        <li>Unzip the download somewhere you'll keep it.</li>
+        <li>Open <code>chrome://extensions</code> — or <code>edge://extensions</code>.</li>
+        <li>Turn on <b>Developer mode</b> (top-right).</li>
+        <li>Click <b>Load unpacked</b> and pick the unzipped folder.</li>
+        <li>Pin it to the toolbar and open a new design.</li>
+      </ol>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="features" class="alt">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="kicker">Everything you'd expect</div>
-        <h2>A real editor, not a toy</h2>
-        <p>Free tier covers the whole editor. Pro adds AI on top.</p>
-      </div>
-      <div class="features">
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></svg></div>
-          <h3>Layers</h3>
-          <p>Add, reorder, duplicate and hide layers with per-layer opacity — raster, text and shape layers side by side.</p>
-        </div>
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.37 2.63 14 7l-1.59 1.59a2 2 0 0 0-.41.55L9.5 13.5 7 16l-4 1 1-4 3-2.5 4.36-2.5a2 2 0 0 1 .55-.41L17 5l4.37-4.37a2.12 2.12 0 1 1 3 3z"/></svg></div>
-          <h3>Drawing &amp; retouching</h3>
-          <p>Brush, eraser, fill bucket, gradients, a real blur brush and a clone stamp — with a live brush cursor.</p>
-        </div>
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></div>
-          <h3>Text &amp; shapes</h3>
-          <p>Ten shape kinds, twelve fonts, letter spacing, outlines — plus non-destructive shadow, border and reflection effects.</p>
-        </div>
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
-          <h3>Templates</h3>
-          <p>Instagram, YouTube, X, Facebook, LinkedIn, Pinterest, A4 print and custom sizes, ready to go.</p>
-        </div>
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/><path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z"/></svg></div>
-          <h3>AI (Pro)</h3>
-          <p>Prompt-based edits, background removal, style transfers and text-to-image — powered by OpenAI, opt-in only.</p>
-        </div>
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg></div>
-          <h3>Private by design</h3>
-          <p>Everything runs offline by default. Your images never leave the browser unless you explicitly run an AI tool.</p>
-        </div>
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></div>
-          <h3>Export anywhere</h3>
-          <p>PNG, JPG or WebP with quality control. Free exports cap at 2048px; Pro exports full resolution.</p>
-        </div>
-        <div class="feature">
-          <div class="f-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-          <h3>Projects saved locally</h3>
-          <p>Autosaved to IndexedDB with recent designs in the popup, plus <code>.pfproj</code> backup downloads.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+<footer>
+  <div class="wrap foot">
+    <div class="brand"><img src="assets/icon128.png" alt="" style="width:20px;height:20px;border-radius:6px" /> Picsmith</div>
+    <p>Offline-first · free forever · your photos, your browser. &nbsp;·&nbsp; <a href="privacy.html">Privacy</a></p>
+  </div>
+</footer>
 
-  <section id="made-with">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="kicker">Made with Picsmith</div>
-        <h2>From blank canvas to finished design</h2>
-        <p>This is a real design, built layer by layer with the editor's own engine — background, shapes, a badge, a headline with a drop shadow, then the final type.</p>
-      </div>
-      <div class="gallery">
-        <figure><img src="assets/demo/step-1-background.png" alt="Step 1: background" /><figcaption><b>1. Background</b>Brand canvas colour</figcaption></figure>
-        <figure><img src="assets/demo/step-2-shapes.png" alt="Step 2: shapes" /><figcaption><b>2. Shapes</b>Diamond + accent circles</figcaption></figure>
-        <figure><img src="assets/demo/step-3-badge.png" alt="Step 3: badge" /><figcaption><b>3. Badge</b>Rounded panel, stroked</figcaption></figure>
-        <figure><img src="assets/demo/step-4-headline.png" alt="Step 4: headline" /><figcaption><b>4. Headline</b>Text layer + drop shadow</figcaption></figure>
-        <figure><img src="assets/demo/step-5-final.png" alt="Step 5: final" /><figcaption><b>5. Final</b>Subtitle + caption</figcaption></figure>
-      </div>
-    </div>
-  </section>
+<script>
+// ---------------------------------------------------------------- scroll reveal
+(() => {
+  const els = document.querySelectorAll(".rise");
+  if (!("IntersectionObserver" in window)) { els.forEach((e) => e.classList.add("in")); return; }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => {
+      if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+    });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
+  els.forEach((e) => io.observe(e));
+})();
 
-  <section id="download" class="alt">
-    <div class="wrap">
-      <div class="download-card">
-        <div>
-          <h2>Get Picsmith</h2>
-          <p>Not yet listed on the extension stores — for now, download the source and load it as an unpacked extension. It takes under a minute.</p>
-          <a class="btn primary" href="downloads/picsmith-extension.zip" download>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-            Download picsmith-extension.zip
-          </a>
-        </div>
-        <ol class="steps">
-          <li>Unzip the download anywhere on your computer.</li>
-          <li>Open <code>chrome://extensions</code> (or <code>edge://extensions</code>).</li>
-          <li>Toggle <b>Developer mode</b> on, top right.</li>
-          <li>Click <b>Load unpacked</b> and select the unzipped <code>Picsmith</code> folder.</li>
-          <li>Pin it to the toolbar and open a new design. 🎉</li>
-        </ol>
-      </div>
-    </div>
-  </section>
+// ---------------------------------------------------------------- live snap demo
+// Mirrors the editor's real behaviour: snap to the stage edges/centre and to
+// every other block's edges and centres, within a fixed pixel tolerance.
+(() => {
+  const stage = document.getElementById("snapStage");
+  const drag = document.getElementById("snapDrag");
+  const gv = document.getElementById("gv");
+  const gh = document.getElementById("gh");
+  const badge = document.getElementById("snapBadge");
+  if (!stage || !drag) return;
 
-  <footer>
-    <div class="wrap footer-inner">
-      <div class="brand"><img src="assets/icon128.png" alt="" style="width:20px;height:20px;border-radius:5px" /> Picsmith</div>
-      <p class="note">Offline-first · free forever · your photos, your browser, unlimited imagination. · <a href="privacy.html" style="color:var(--text-3);text-decoration:underline;">Privacy Policy</a></p>
-    </div>
-  </footer>
+  const TOL = 7;
+  let active = false, offX = 0, offY = 0;
 
+  const others = () => [...stage.querySelectorAll("[data-box]")].map((el) => {
+    const r = el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    return { left: r.left - s.left, top: r.top - s.top, w: r.width, h: r.height };
+  });
+
+  function targets() {
+    const s = stage.getBoundingClientRect();
+    const xs = [0, s.width / 2, s.width];
+    const ys = [0, s.height / 2, s.height];
+    others().forEach((b) => {
+      xs.push(b.left, b.left + b.w / 2, b.left + b.w);
+      ys.push(b.top, b.top + b.h / 2, b.top + b.h);
+    });
+    return { xs, ys };
+  }
+
+  function place(x, y) {
+    const s = stage.getBoundingClientRect();
+    const w = drag.offsetWidth, h = drag.offsetHeight;
+    x = Math.max(0, Math.min(s.width - w, x));
+    y = Math.max(0, Math.min(s.height - h, y));
+
+    let snapX = null, snapY = null;
+    if (!place.noSnap) {
+      const { xs, ys } = targets();
+      for (const anchor of [x, x + w / 2, x + w]) {
+        for (const t of xs) {
+          const d = Math.abs(anchor - t);
+          if (d <= TOL && (snapX === null || d < snapX.d)) snapX = { d, delta: t - anchor, at: t };
+        }
+      }
+      for (const anchor of [y, y + h / 2, y + h]) {
+        for (const t of ys) {
+          const d = Math.abs(anchor - t);
+          if (d <= TOL && (snapY === null || d < snapY.d)) snapY = { d, delta: t - anchor, at: t };
+        }
+      }
+    }
+    if (snapX) x += snapX.delta;
+    if (snapY) y += snapY.delta;
+
+    drag.style.left = x + "px";
+    drag.style.top = y + "px";
+    drag.style.right = "auto";
+
+    gv.classList.toggle("on", !!snapX);
+    gh.classList.toggle("on", !!snapY);
+    if (snapX) gv.style.left = snapX.at + "px";
+    if (snapY) gh.style.top = snapY.at + "px";
+    badge.classList.toggle("on", !!(snapX || snapY));
+  }
+
+  drag.addEventListener("pointerdown", (e) => {
+    active = true;
+    stage.classList.add("dragging");
+    const r = drag.getBoundingClientRect();
+    offX = e.clientX - r.left;
+    offY = e.clientY - r.top;
+    drag.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  window.addEventListener("pointermove", (e) => {
+    if (!active) return;
+    place.noSnap = e.ctrlKey || e.metaKey;
+    const s = stage.getBoundingClientRect();
+    place(e.clientX - s.left - offX, e.clientY - s.top - offY);
+  });
+  window.addEventListener("pointerup", () => {
+    if (!active) return;
+    active = false;
+    stage.classList.remove("dragging");
+    gv.classList.remove("on");
+    gh.classList.remove("on");
+    badge.classList.remove("on");
+  });
+
+  // Nudge the block once on first view so the interaction is discoverable.
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver((en) => {
+      if (!en[0].isIntersecting) return;
+      io.disconnect();
+      const startL = drag.offsetLeft;
+      let t = 0;
+      const tick = () => {
+        t += 1;
+        place(startL + Math.sin(t / 9) * 26, drag.offsetTop);
+        if (t < 34) requestAnimationFrame(tick);
+        else { gv.classList.remove("on"); gh.classList.remove("on"); badge.classList.remove("on"); }
+      };
+      setTimeout(() => requestAnimationFrame(tick), 420);
+    }, { threshold: 0.4 });
+    io.observe(stage);
+  }
+})();
+</script>
 </body>
 </html>
