@@ -46,7 +46,9 @@ body::before {
 .nav .back:hover { color: var(--paper); }
 
 /* hero */
-.head { padding: clamp(52px,8vw,92px) 0 clamp(28px,4vw,44px); position: relative; }
+/* overflow:hidden matters — the glow below is 120vw wide and centred, so on a
+   phone it spills past both edges and widens the whole document. */
+.head { padding: clamp(52px,8vw,92px) 0 clamp(28px,4vw,44px); position: relative; overflow: hidden; }
 .head::before {
   content: ""; position: absolute; top: -220px; left: 50%; transform: translateX(-50%);
   width: min(900px,120vw); height: 520px; pointer-events: none; filter: blur(6px);
