@@ -41,7 +41,7 @@
   <div class="updated">Last updated: August 2026</div>
 
   <div class="callout">
-    <p><strong>Short version:</strong> Picsmith runs entirely inside your browser. Your designs are stored on your own device and are never uploaded to us — we don't operate any server that receives them. The only exception is if you choose to use an AI (Pro) tool with your own OpenAI API key, in which case the specific image or text you act on is sent directly from your browser to OpenAI, using your key, not ours.</p>
+    <p><strong>Short version:</strong> Picsmith runs entirely inside your browser. Your designs are stored on your own device and are never uploaded to us — we don't operate any server that receives them. Two things can cause a network request, and you control both: using an AI (Pro) tool, which sends that specific image or prompt straight to OpenAI with your own key; and switching on update checking, which is off by default and only ever fetches a version number.</p>
   </div>
 
   <h2>What Picsmith stores, and where</h2>
@@ -67,7 +67,17 @@
     <tr><td><code>tabs</code></td><td>Open the full editor in a new browser tab from the toolbar popup.</td></tr>
     <tr><td><code>clipboardWrite</code></td><td>Let you copy an exported design directly to your clipboard.</td></tr>
     <tr><td>Host permission: <code>api.openai.com</code></td><td>Only contacted when you run an AI (Pro) tool with your own key, as described above.</td></tr>
+    <tr><td>Host permission: <code>picsmith.alresia.tech</code></td><td>Only contacted if you switch on update checking, which is off by default. See below.</td></tr>
   </table>
+
+  <h2>Update checking is off until you turn it on</h2>
+  <p>Out of the box, Picsmith makes no network requests at all. If you enable <strong>Settings → Updates → Check for new versions</strong>, then at most once a day it fetches a single small file — <code>picsmith.alresia.tech/version.json</code> — which contains nothing but the latest version number.</p>
+  <ul>
+    <li>The request sends no information about you, your designs, or how you use the app. It's an ordinary web request, so our host sees what any web server sees: an IP address and a timestamp.</li>
+    <li>We don't log, profile or retain those requests for analytics, and there's no identifier attached that could link one check to another.</li>
+    <li>Picsmith never installs anything by itself. If a newer version exists it tells you, and you decide whether to download it.</li>
+    <li>Switching the setting back off stops the checks immediately.</li>
+  </ul>
 
   <h2>What we don't do</h2>
   <ul>

@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Support Picsmith — buy me a coffee</title>
+<meta name="description" content="Picsmith is free and always will be. If it saved you a subscription, here are all the ways you can throw something back — card, bank transfer or crypto." />
+<link rel="icon" href="assets/icon128.png" />
+<meta property="og:title" content="Support Picsmith" />
+<meta property="og:description" content="Picsmith is free forever. If it's useful to you, here's how to buy me a coffee." />
+<meta property="og:image" content="assets/gallery/piece-duotone.png" />
+
+<style>
+:root {
+  --ink: #08080a; --ink-2: #0e0e11; --panel: #141418; --panel-2: #1b1b21;
+  --line: #26262e; --line-soft: #1d1d23;
+  --paper: #f2f0ec; --paper-2: #a8a6a2; --paper-3: #6e6c70;
+  --accent: #4f7dff; --mint: #25e5b0; --hot: #ff3d7f;
+  --maxw: 900px; --f-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --f-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --f-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--ink); color: var(--paper); font-family: var(--f-display);
+  line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--accent); color: #fff; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 26px; }
+
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* nav */
+.nav { position: sticky; top: 0; z-index: 60; backdrop-filter: blur(14px);
+  background: rgba(8,8,10,.72); border-bottom: 1px solid var(--line-soft); }
+.nav-in { display: flex; align-items: center; gap: 16px; height: 62px; max-width: var(--maxw); margin: 0 auto; padding: 0 26px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: -.02em; }
+.brand img { width: 24px; height: 24px; border-radius: 7px; }
+.nav .back { margin-left: auto; font-size: 13.5px; color: var(--paper-2); }
+.nav .back:hover { color: var(--paper); }
+
+/* hero */
+.head { padding: clamp(52px,8vw,92px) 0 clamp(28px,4vw,44px); position: relative; }
+.head::before {
+  content: ""; position: absolute; top: -220px; left: 50%; transform: translateX(-50%);
+  width: min(900px,120vw); height: 520px; pointer-events: none; filter: blur(6px);
+  background: radial-gradient(closest-side, rgba(79,125,255,.26), transparent 70%);
+}
+.head-in { position: relative; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--paper-3); margin-bottom: 16px; }
+h1 { font-size: clamp(34px,6vw,60px); font-weight: 800; letter-spacing: -.04em; line-height: 1.02; margin-bottom: 18px; }
+h1 .it { font-family: var(--f-serif); font-style: italic; font-weight: 400; }
+.lede { font-size: clamp(15.5px,1.6vw,18px); color: var(--paper-2); line-height: 1.62; max-width: 60ch; }
+
+/* sections */
+section { padding: clamp(30px,5vw,46px) 0; }
+.sec-title { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+.sec-title h2 { font-size: clamp(19px,2.4vw,25px); font-weight: 800; letter-spacing: -.025em; }
+.sec-title span { font-size: 12.5px; color: var(--paper-3); }
+
+/* cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 12px; }
+.card {
+  display: block; background: var(--panel); border: 1px solid var(--line-soft);
+  border-radius: 12px; padding: 17px 18px;
+  transition: border-color .16s ease, transform .16s ease, background .16s ease;
+}
+a.card:hover { border-color: var(--line); background: var(--panel-2); transform: translateY(-2px); }
+.card .row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.card b { font-size: 14.5px; font-weight: 700; }
+.card .go { margin-left: auto; color: var(--paper-3); font-size: 15px; }
+a.card:hover .go { color: var(--accent); }
+.card p { font-size: 12.5px; color: var(--paper-3); line-height: 1.5; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+
+/* copy rows (bank + crypto) */
+.block { background: var(--panel); border: 1px solid var(--line-soft); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+.block h3 { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--paper); }
+.block h3 small { font-family: var(--f-mono); font-size: 10.5px; color: var(--paper-3); font-weight: 400; margin-left: 8px; }
+.kv { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid var(--line-soft); }
+.kv:first-of-type { border-top: 0; }
+.kv .k { font-size: 12px; color: var(--paper-3); width: 130px; flex: 0 0 auto; }
+.kv .v { font-family: var(--f-mono); font-size: 13px; color: var(--paper); flex: 1; word-break: break-all; }
+.copy {
+  flex: 0 0 auto; font-size: 11px; font-weight: 600; font-family: var(--f-display);
+  color: var(--paper-2); background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 7px; padding: 5px 10px; cursor: pointer;
+  transition: color .14s, border-color .14s, background .14s;
+}
+.copy:hover { color: var(--paper); border-color: var(--paper-3); }
+.copy.done { color: #04251c; background: var(--mint); border-color: var(--mint); }
+
+.warn {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: rgba(255,61,127,.07); border: 1px solid rgba(255,61,127,.28);
+  border-radius: 10px; padding: 13px 15px; margin-bottom: 14px;
+  font-size: 12.5px; color: #ffb9d0; line-height: 1.5;
+}
+.warn svg { width: 16px; height: 16px; flex: 0 0 auto; margin-top: 1px; }
+
+.empty {
+  background: var(--panel); border: 1px dashed var(--line); border-radius: 12px;
+  padding: 22px; text-align: center; color: var(--paper-3); font-size: 13.5px; line-height: 1.6;
+}
+
+footer { border-top: 1px solid var(--line-soft); padding: 34px 0 56px; margin-top: 30px; }
+.foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; font-size: 12.5px; color: var(--paper-3); }
+.foot a { color: var(--paper-2); text-decoration: underline; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 14px);
+  background: var(--paper); color: #111; font-size: 13px; font-weight: 600;
+  padding: 10px 18px; border-radius: 999px; opacity: 0; pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease; z-index: 200;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><img src="assets/icon128.png" alt="" /> Picsmith</a>
+    <a class="back" href="index.html">← Back to the site</a>
+  </div>
+</header>
+
+<div class="head">
+  <div class="wrap head-in">
+    <div class="eyebrow">Support the project</div>
+    <h1>Picsmith is free.<br />It's staying <span class="it">free.</span></h1>
+    <p class="lede">
+      No subscription, no account, no upsell in the corner of the canvas. If it saved you
+      the price of one, and you feel like buying me a coffee for it — here's every way to do that.
+      Skipping this costs you nothing and the app stays exactly the same.
+    </p>
+  </div>
+</div>
+
+<main class="wrap" id="app">
+  <!-- rendered from support-config.js -->
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>Picsmith · offline-first · free forever</span>
+    <span><a href="index.html">Home</a> · <a href="privacy.html">Privacy</a></span>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied</div>
+
+<script src="support-config.js"></script>
+<script>
+(() => {
+  const CFG = window.PICSMITH_SUPPORT || {};
+  const app = document.getElementById("app");
+  const toastEl = document.getElementById("toast");
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  let toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1700);
+  }
+
+  // Brand-ish accent per provider, so the list doesn't read as one grey block.
+  const TINT = {
+    kofi: "#ff5e5b", bmc: "#ffdd00", paypal: "#00457c", paystack: "#00c3f7",
+    flutterwave: "#f5a623", sponsors: "#db61a2",
+  };
+
+  const html = [];
+  const filled = (v) => typeof v === "string" && v.trim() !== "";
+
+  /* ---------- 1. hosted payment pages ---------- */
+  const pages = (CFG.pages || []).filter((p) => filled(p.url));
+  if (pages.length) {
+    html.push(`<section><div class="sec-title"><h2>Card &amp; one-tap</h2><span>opens in a new tab</span></div><div class="grid">`);
+    for (const p of pages) {
+      html.push(`
+        <a class="card" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">
+          <div class="row">
+            <i class="dot" style="background:${esc(TINT[p.id] || "#4f7dff")}"></i>
+            <b>${esc(p.name)}</b><span class="go">↗</span>
+          </div>
+          <p>${esc(p.note || "")}</p>
+        </a>`);
+    }
+    html.push(`</div></section>`);
+  }
+
+  /* ---------- 2. bank transfer ---------- */
+  const banks = (CFG.banks || [])
+    .map((b) => ({ label: b.label, rows: (b.rows || []).filter((r) => filled(r[1])) }))
+    .filter((b) => b.rows.length);
+  if (banks.length) {
+    html.push(`<section><div class="sec-title"><h2>Bank transfer</h2><span>tap any value to copy</span></div>`);
+    for (const b of banks) {
+      html.push(`<div class="block">${b.label ? `<h3>${esc(b.label)}</h3>` : ""}`);
+      for (const [k, v] of b.rows) {
+        html.push(`
+          <div class="kv">
+            <span class="k">${esc(k)}</span>
+            <span class="v">${esc(v)}</span>
+            <button class="copy" data-copy="${esc(v)}">Copy</button>
+          </div>`);
+      }
+      html.push(`</div>`);
+    }
+    html.push(`</section>`);
+  }
+
+  /* ---------- 3. crypto ---------- */
+  const crypto = (CFG.crypto || []).filter((c) => filled(c.address));
+  if (crypto.length) {
+    html.push(`
+      <section>
+        <div class="sec-title"><h2>Crypto</h2><span>tap an address to copy</span></div>
+        <div class="warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a1.9 1.9 0 0 0 1.6 2.9h17.2a1.9 1.9 0 0 0 1.6-2.9L13.7 3.9a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+          <span>Send only on the network named next to each address. Crypto sent on the wrong
+          network, or to a mistyped address, cannot be recovered by anyone.</span>
+        </div>`);
+    for (const c of crypto) {
+      html.push(`
+        <div class="block">
+          <h3>${esc(c.name)} <small>${esc(c.symbol)}${c.network ? " · " + esc(c.network) : ""}</small></h3>
+          <div class="kv">
+            <span class="k">Address</span>
+            <span class="v">${esc(c.address)}</span>
+            <button class="copy" data-copy="${esc(c.address)}">Copy</button>
+          </div>
+        </div>`);
+    }
+    html.push(`</section>`);
+  }
+
+  /* ---------- nothing configured yet ---------- */
+  if (!pages.length && !banks.length && !crypto.length) {
+    html.push(`
+      <section>
+        <div class="empty">
+          Payment options are still being set up — check back shortly.<br />
+          In the meantime, the free things below help just as much.
+        </div>
+      </section>`);
+  }
+
+  /* ---------- 4. free ways to help (always shown) ---------- */
+  const free = (CFG.free || []).filter((f) => filled(f.url));
+  if (free.length) {
+    html.push(`<section><div class="sec-title"><h2>Costs nothing</h2><span>honestly, just as useful</span></div><div class="grid">`);
+    for (const f of free) {
+      const ext = /^https?:/i.test(f.url);
+      html.push(`
+        <a class="card" href="${esc(f.url)}"${ext ? ' target="_blank" rel="noopener noreferrer"' : ""}>
+          <div class="row"><i class="dot" style="background:var(--mint)"></i><b>${esc(f.name)}</b><span class="go">${ext ? "↗" : "→"}</span></div>
+          <p>${esc(f.note || "")}</p>
+        </a>`);
+    }
+    html.push(`</div></section>`);
+  }
+
+  app.innerHTML = html.join("");
+
+  // copy-to-clipboard, with a manual fallback for browsers that block it
+  app.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-copy]");
+    if (!btn) return;
+    const val = btn.dataset.copy;
+    try {
+      await navigator.clipboard.writeText(val);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = val;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch { toast("Press ⌘/Ctrl+C to copy"); }
+      ta.remove();
+    }
+    btn.textContent = "Copied";
+    btn.classList.add("done");
+    toast("Copied to clipboard");
+    setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("done"); }, 1600);
+  });
+})();
+</script>
+</body>
+</html>
