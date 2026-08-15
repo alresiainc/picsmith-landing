@@ -41,7 +41,7 @@
   <div class="updated">Last updated: August 2026</div>
 
   <div class="callout">
-    <p><strong>Short version:</strong> Picsmith runs entirely inside your browser. Your designs are stored on your own device and are never uploaded to us — we don't operate any server that receives them. Two things can cause a network request, and you control both: using an AI (Pro) tool, which sends that specific image or prompt straight to OpenAI with your own key; and switching on update checking, which is off by default and only ever fetches a version number.</p>
+    <p><strong>Short version:</strong> Picsmith runs entirely inside your browser. Your designs are stored on your own device and are never uploaded to us — we don't operate any server that receives them. Three things can cause a network request, and you trigger every one of them yourself: running a cloud AI tool (sends that specific image or prompt to OpenAI, with your own key); downloading the on-device background-removal engine (a one-time ~15MB fetch you explicitly approve first); and switching on update checking (off by default, fetches only a version number).</p>
   </div>
 
   <h2>What Picsmith stores, and where</h2>
@@ -51,12 +51,21 @@
     <li>None of the above is transmitted to any server we operate. We don't run a backend, and we don't have accounts or sign-in — there's nothing tied to your identity for us to collect.</li>
   </ul>
 
-  <h2>The AI (Pro) features are opt-in and bring-your-own-key</h2>
-  <p>Picsmith's AI tools (prompt-based edits, background removal, style transfer, text-to-image) are optional. To use them, you provide your own OpenAI API key in Settings. When you run an AI tool:</p>
+  <h2>Cloud AI is opt-in and bring-your-own-key</h2>
+  <p>Picsmith's AI tab (prompt-based edits, style transfer, text-to-image, analysis) is optional and free — add your own OpenAI API key in Settings and it unlocks, no Picsmith Pro required. When you run one of these tools:</p>
   <ul>
     <li>The image and/or prompt text for <em>that specific action</em> is sent directly from your browser to OpenAI's API (<code>api.openai.com</code>), authenticated with your own API key.</li>
     <li>We never see, receive, or store that data — the request doesn't pass through any server of ours.</li>
     <li>That data is then subject to <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener">OpenAI's own privacy policy</a>, since they're the ones processing it.</li>
+  </ul>
+
+  <h2>On-device background removal downloads a small engine once, with consent</h2>
+  <p><strong>Image ▸ Remove background (AI)</strong> is a separate, Pro-only feature that runs a neural network (U²-Net) entirely on your device — it never sends your image anywhere. The engine itself, however, is not bundled in the extension install (that would make every install larger, for a tool most people never touch):</p>
+  <ul>
+    <li>The first time you use it, Picsmith shows a dialog stating the size (~15MB) and that it's a one-time download — nothing fetches until you click through it.</li>
+    <li>That download pulls two files — the ONNX Runtime engine and the model weights — from <code>picsmith.alresia.tech/ai-assets/</code>. They are stored in your browser's own Cache Storage.</li>
+    <li>Every use after that is served from that local cache — no further network activity, and the actual image processing never leaves your device, then or ever.</li>
+    <li>This feature requires an active Picsmith Pro license, since hosting that download costs us bandwidth regardless of who's asking.</li>
   </ul>
 
   <h2>Permissions Picsmith requests, and why</h2>
@@ -66,8 +75,8 @@
     <tr><td><code>unlimitedStorage</code></td><td>Full-resolution designs can exceed the browser's default storage quota; this lifts that cap for IndexedDB.</td></tr>
     <tr><td><code>tabs</code></td><td>Open the full editor in a new browser tab from the toolbar popup.</td></tr>
     <tr><td><code>clipboardWrite</code></td><td>Let you copy an exported design directly to your clipboard.</td></tr>
-    <tr><td>Host permission: <code>api.openai.com</code></td><td>Only contacted when you run an AI (Pro) tool with your own key, as described above.</td></tr>
-    <tr><td>Host permission: <code>picsmith.alresia.tech</code></td><td>Only contacted if you switch on update checking, which is off by default. See below.</td></tr>
+    <tr><td>Host permission: <code>api.openai.com</code></td><td>Only contacted when you run a cloud AI tool with your own key, as described above.</td></tr>
+    <tr><td>Host permission: <code>picsmith.alresia.tech</code></td><td>Two independent, user-triggered uses: the opt-in update check below, and — with a Pro license and your explicit consent — the one-time background-removal engine download described above.</td></tr>
   </table>
 
   <h2>Update checking is off until you turn it on</h2>
